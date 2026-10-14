@@ -10,10 +10,13 @@ public class UIManager : MonoBehaviour
     [Header("Robot Panel")]
     [SerializeField] private GameObject detailsPanel;
     [SerializeField] private TMP_Text robotIdText;
+    [SerializeField] private TMP_Text robotNameText;
     [SerializeField] private TMP_Text positionText;
     [SerializeField] private TMP_Text speedText;
     [SerializeField] private TMP_Text headingText;
+[SerializeField] private TMP_Text dataAgeText;
     [SerializeField] private TMP_Text statusText;
+
 
     [Header("Warning UI")]
     [SerializeField] private GameObject warningPanel;
@@ -92,39 +95,90 @@ public class UIManager : MonoBehaviour
             detailsPanel.SetActive(true);
     }
 
-    private void RefreshDetails()
+
+
+private void RefreshDetails()
+{
+    if (selectedRobot == null ||
+        selectedRobot.CurrentTelemetry == null)
+        return;
+
+    RobotTelemetry data = selectedRobot.CurrentTelemetry;
+
+    // Robot ID
+    RobotIdentity identity =
+        selectedRobot.GetComponent<RobotIdentity>();
+
+    string robotId = identity != null &&
+                     !string.IsNullOrEmpty(identity.UnitId)
+        ? identity.UnitId
+        : data.robotId;
+
+    if (robotIdText != null)
+        robotIdText.text = "ID: " + robotId;
+// Robot Name
+if (robotNameText != null)
+{
+    string robotName = GetRobotName(robotId);
+    robotNameText.text = "Name: " + robotName;
+}
+    // Speed
+    if (speedText != null)
+        speedText.text = $"Speed: {data.speed:F1} m/s";
+
+    // Heading
+    if (headingText != null)
+        headingText.text = $"Heading: {data.heading:F0} deg";
+
+    // Position
+    if (positionText != null)
+        positionText.text =
+            $"Position: X {data.position.x:F1} / " +
+            $"Z {data.position.z:F1}";
+
+    // Data Age
+    float dataAge = Mathf.Max(
+        0f, Time.time - data.lastUpdateTime);
+
+    if (dataAgeText != null)
+        dataAgeText.text = $"Data Age: {dataAge:F1} sec";
+
+    // Status
+    bool dataLost = !data.isConnected || dataAge >= 3f;
+
+    if (statusText != null)
     {
-        if (selectedRobot == null ||
-            selectedRobot.CurrentTelemetry == null)
-            return;
+        statusText.text = dataLost
+            ? "Status: DATA LOST"
+            : "Status: NORMAL";
 
-        RobotTelemetry data = selectedRobot.CurrentTelemetry;
-
-        if (robotIdText != null)
-            robotIdText.text = "Robot ID: " + data.robotId;
-
-        if (positionText != null)
-            positionText.text =
-                $"Position: ({data.position.x:F2}, " +
-                $"{data.position.y:F2}, {data.position.z:F2})";
-
-        if (speedText != null)
-            speedText.text = $"Speed: {data.speed:F2}";
-
-        if (headingText != null)
-            headingText.text = $"Heading: {data.heading:F1}°";
-
-        if (statusText != null)
-        {
-            statusText.text = data.isConnected
-                ? "Status: CONNECTED"
-                : "Status: DATA LOST";
-
-            statusText.color = data.isConnected
-                ? Color.green
-                : Color.red;
-        }
+        statusText.color = dataLost
+            ? Color.red
+            : Color.green;
     }
+}
+private string GetRobotName(string robotId)
+{
+    if (string.IsNullOrEmpty(robotId) ||
+        !robotId.StartsWith("BOT_"))
+        return robotId;
+
+    if (!int.TryParse(robotId.Substring(4), out int number) ||
+        number < 1)
+        return robotId;
+
+    string name = "";
+
+    while (number > 0)
+    {
+        number--;
+        name = (char)('A' + number % 26) + name;
+        number /= 26;
+    }
+
+    return "ROBOT_" + name;
+}
+
     //--------------------------------------------------//
     //-------------------------------------------------//
 
