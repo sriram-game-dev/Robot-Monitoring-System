@@ -265,7 +265,7 @@ BoxCollider:
   m_LayerOverridePriority: 0
   m_IsTrigger: 0
   m_ProvidesContacts: 0
-  m_Enabled: 1
+  m_Enabled: 0
   serializedVersion: 3
   m_Size: {x: 0.21, y: 0.25, z: 0.24}
   m_Center: {x: 0, y: 0, z: 0}
@@ -987,7 +987,7 @@ BoxCollider:
   m_LayerOverridePriority: 0
   m_IsTrigger: 0
   m_ProvidesContacts: 0
-  m_Enabled: 1
+  m_Enabled: 0
   serializedVersion: 3
   m_Size: {x: 0.7, y: 0.16, z: 0.14}
   m_Center: {x: 0, y: 0, z: 0}
@@ -1703,7 +1703,7 @@ BoxCollider:
   m_LayerOverridePriority: 0
   m_IsTrigger: 0
   m_ProvidesContacts: 0
-  m_Enabled: 1
+  m_Enabled: 0
   serializedVersion: 3
   m_Size: {x: 0.73, y: 0.58, z: 0.15}
   m_Center: {x: 0, y: 0, z: 0}
@@ -3397,7 +3397,7 @@ BoxCollider:
   m_LayerOverridePriority: 0
   m_IsTrigger: 0
   m_ProvidesContacts: 0
-  m_Enabled: 1
+  m_Enabled: 0
   serializedVersion: 3
   m_Size: {x: 0.23, y: 0.2, z: 0.78}
   m_Center: {x: 0, y: 0, z: 0}
@@ -3663,7 +3663,7 @@ BoxCollider:
   m_LayerOverridePriority: 0
   m_IsTrigger: 0
   m_ProvidesContacts: 0
-  m_Enabled: 1
+  m_Enabled: 0
   serializedVersion: 3
   m_Size: {x: 0.7, y: 0.2, z: 0.16}
   m_Center: {x: 0, y: 0, z: 0}
@@ -4381,7 +4381,7 @@ BoxCollider:
   m_LayerOverridePriority: 0
   m_IsTrigger: 0
   m_ProvidesContacts: 0
-  m_Enabled: 1
+  m_Enabled: 0
   serializedVersion: 3
   m_Size: {x: 0.52, y: 0.14, z: 0.21}
   m_Center: {x: 0, y: 0, z: 0}
@@ -4435,7 +4435,7 @@ BoxCollider:
   m_LayerOverridePriority: 0
   m_IsTrigger: 0
   m_ProvidesContacts: 0
-  m_Enabled: 1
+  m_Enabled: 0
   serializedVersion: 3
   m_Size: {x: 0.08, y: 0.64, z: 0.13}
   m_Center: {x: 0, y: 0, z: 0}
@@ -4610,7 +4610,7 @@ BoxCollider:
   m_LayerOverridePriority: 0
   m_IsTrigger: 0
   m_ProvidesContacts: 0
-  m_Enabled: 1
+  m_Enabled: 0
   serializedVersion: 3
   m_Size: {x: 0.88, y: 0.49, z: 0.35}
   m_Center: {x: 0, y: 0, z: 0}
@@ -4925,6 +4925,8 @@ GameObject:
   m_Component:
   - component: {fileID: 3502343657525633607}
   - component: {fileID: 8085124036927493414}
+  - component: {fileID: 2691671756889507123}
+  - component: {fileID: 7733509338123237487}
   m_Layer: 0
   m_Name: moto_bot_forassembly 1
   m_TagString: Untagged
@@ -4975,9 +4977,55 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7a1f43429d0d9b14284639ec8328d015, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::RobotController
-  speedMultiplier: 1.5
-  turnSpeed: 180
-  positionSmoothTime: 0.15
+  turnSpeed: 360
+--- !u!54 &2691671756889507123
+Rigidbody:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4986656328616959396}
+  serializedVersion: 5
+  m_Mass: 1
+  m_LinearDamping: 0
+  m_AngularDamping: 0.05
+  m_CenterOfMass: {x: 0, y: 0, z: 0}
+  m_InertiaTensor: {x: 1, y: 1, z: 1}
+  m_InertiaRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ImplicitCom: 1
+  m_ImplicitTensor: 1
+  m_UseGravity: 0
+  m_IsKinematic: 1
+  m_Interpolate: 1
+  m_Constraints: 0
+  m_CollisionDetection: 0
+--- !u!65 &7733509338123237487
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4986656328616959396}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 0.8779894, y: 0.66011477, z: 1.7364177}
+  m_Center: {x: -0.008715063, y: 0.2483775, z: -0.3682089}
 --- !u!1 &5054480206407590478
 GameObject:
   m_ObjectHideFlags: 0
@@ -5723,7 +5771,7 @@ BoxCollider:
   m_LayerOverridePriority: 0
   m_IsTrigger: 0
   m_ProvidesContacts: 0
-  m_Enabled: 1
+  m_Enabled: 0
   serializedVersion: 3
   m_Size: {x: 0.88, y: 0.5, z: 0.14}
   m_Center: {x: 0, y: 0, z: 0}
@@ -6199,7 +6247,7 @@ BoxCollider:
   m_LayerOverridePriority: 0
   m_IsTrigger: 0
   m_ProvidesContacts: 0
-  m_Enabled: 1
+  m_Enabled: 0
   serializedVersion: 3
   m_Size: {x: 0.12, y: 0.67, z: 0.15}
   m_Center: {x: 0, y: 0, z: 0}
@@ -6586,7 +6634,7 @@ BoxCollider:
   m_LayerOverridePriority: 0
   m_IsTrigger: 0
   m_ProvidesContacts: 0
-  m_Enabled: 1
+  m_Enabled: 0
   serializedVersion: 3
   m_Size: {x: 0.13, y: 0.15, z: 0.48}
   m_Center: {x: 0, y: 0, z: 0}
@@ -6671,7 +6719,7 @@ BoxCollider:
   m_LayerOverridePriority: 0
   m_IsTrigger: 0
   m_ProvidesContacts: 0
-  m_Enabled: 1
+  m_Enabled: 0
   serializedVersion: 3
   m_Size: {x: 0.26, y: 0.3, z: 0.21}
   m_Center: {x: 0, y: 0, z: 0}
@@ -7478,7 +7526,7 @@ BoxCollider:
   m_LayerOverridePriority: 0
   m_IsTrigger: 0
   m_ProvidesContacts: 0
-  m_Enabled: 1
+  m_Enabled: 0
   serializedVersion: 3
   m_Size: {x: 0.67, y: 0.18, z: 0.75}
   m_Center: {x: 0, y: 0, z: 0}
@@ -7897,7 +7945,7 @@ BoxCollider:
   m_LayerOverridePriority: 0
   m_IsTrigger: 0
   m_ProvidesContacts: 0
-  m_Enabled: 1
+  m_Enabled: 0
   serializedVersion: 3
   m_Size: {x: 0.63, y: 0.23, z: 0.22}
   m_Center: {x: 0, y: 0, z: 0}
@@ -9110,7 +9158,7 @@ BoxCollider:
   m_LayerOverridePriority: 0
   m_IsTrigger: 0
   m_ProvidesContacts: 0
-  m_Enabled: 1
+  m_Enabled: 0
   serializedVersion: 3
   m_Size: {x: 0.49, y: 0.52, z: 0.54}
   m_Center: {x: 0, y: 0, z: 0}

@@ -1,57 +1,42 @@
+
 using UnityEngine;
 using System.Collections.Generic;
+
 public class GameManager : MonoBehaviour
 {
-
-
-    //Reference
     public static GameManager instance;
 
-  private readonly Dictionary<string, RobotController>
-        spawnedRobots =
-            new Dictionary<string, RobotController>();
+    private readonly Dictionary<string, RobotController>
+        spawnedRobots = new Dictionary<string, RobotController>();
 
-    //Reference
     private MockTelemetrySource telemetrySource;
     private GameObject robotPrefab;
 
-private void Awake()
-{
-    if (instance == null)
+    private void Awake()
     {
-        instance = this;
+        if (instance == null)
+        {
+            instance = this;
+        }
+        else if (instance != this)
+        {
+            Destroy(gameObject);
+        }
     }
-    else if (instance != this)
-    {
-        Destroy(gameObject);
-    }
-}
 
-    void Reference()
+    private void Reference()
     {
-        //Scripts
         telemetrySource = MockTelemetrySource.instance;
-
-        //Object
         robotPrefab = ResourceManager.instance.botPrefab;
     }
 
     private void Start()
     {
-        //Reference
         Reference();
-
-        //Robot Spawner Logic At Start()
         RobotSpawnerStartOption();
-        
-
     }
 
-//-------------------------------------------------
-//-------------Robot Spawner Logic------------------
-//-------------------------------------------------
-
-    void RobotSpawnerStartOption()
+    private void RobotSpawnerStartOption()
     {
         if (telemetrySource == null || robotPrefab == null)
         {
@@ -61,10 +46,16 @@ private void Awake()
             return;
         }
 
-        // Subscribe before reading existing telemetry.
+        if (RobotPoolManager.Instance == null)
+        {
+            Debug.LogError(
+                "RobotSpawner: RobotPoolManager not found in the scene.");
+            enabled = false;
+            return;
+        }
+
         telemetrySource.TelemetryUpdated += OnTelemetryUpdated;
 
-        // Handles either script starting first.
         foreach (RobotTelemetry data in telemetrySource.Robots)
         {
             OnTelemetryUpdated(data);
@@ -77,18 +68,26 @@ private void Awake()
         {
             telemetrySource.TelemetryUpdated -= OnTelemetryUpdated;
         }
+
+        if (instance == this)
+        {
+            instance = null;
+        }
     }
 
     private void OnTelemetryUpdated(RobotTelemetry data)
     {
-        if (data == null)
+        if (data == null || string.IsNullOrWhiteSpace(data.robotId))
             return;
 
         if (!spawnedRobots.TryGetValue(
-                data.robotId, out RobotController controller))
+            data.robotId, out RobotController controller))
         {
-            GameObject robot = Instantiate(
-                robotPrefab, data.position, Quaternion.identity);
+            GameObject robot = RobotPoolManager.Instance.GetRobot(
+                data.position, Quaternion.identity);
+
+            if (robot == null)
+                return;
 
             robot.name = data.robotId;
 
@@ -100,12 +99,10 @@ private void Awake()
 
             identity.Initialize(data.robotId);
 
-            controller =
-                robot.GetComponent<RobotController>();
+            controller = robot.GetComponent<RobotController>();
 
             if (controller == null)
-                controller =
-                    robot.AddComponent<RobotController>();
+                controller = robot.AddComponent<RobotController>();
 
             spawnedRobots.Add(data.robotId, controller);
         }
@@ -120,10 +117,4 @@ private void Awake()
 
         return controller;
     }
-
-//-------------------------------------------------
-//-------------Robot Spawner Logic------------------
-//-------------------------------------------------
-
-
 }

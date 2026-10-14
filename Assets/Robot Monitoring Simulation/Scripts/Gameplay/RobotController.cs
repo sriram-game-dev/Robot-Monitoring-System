@@ -4,13 +4,16 @@ using UnityEngine;
 public class RobotController : MonoBehaviour
 {
     [Header("Movement")]
-    [SerializeField] private float speedMultiplier = 1f;
+    // [SerializeField] private float speedMultiplier = 1f;
     [SerializeField] private float turnSpeed = 180f;
 
     public RobotTelemetry CurrentTelemetry { get; private set; }
 
     private Vector3 targetPosition;
     private Quaternion targetRotation;
+    private Vector3 previousPosition;
+    private float interpolationDuration = 0.5f;
+    private float interpolationTimer;
     private bool initialized;
 
     public void SetTelemetry(RobotTelemetry data)
@@ -18,9 +21,16 @@ public class RobotController : MonoBehaviour
         if (data == null)
             return;
 
+        // Capture the previous target before accepting the new one.
+        if (initialized)
+            previousPosition = transform.position;
+        else
+            previousPosition = data.position;
+
         CurrentTelemetry = data;
         targetPosition = data.position;
         targetRotation = Quaternion.Euler(0f, data.heading, 0f);
+        interpolationTimer = 0f;
 
         if (!initialized)
         {
@@ -38,13 +48,15 @@ public class RobotController : MonoBehaviour
         if (!CurrentTelemetry.isConnected)
             return;
 
-        float speed = Mathf.Max(
-            0f, CurrentTelemetry.speed * speedMultiplier);
+        interpolationTimer += Time.deltaTime;
 
-        transform.position = Vector3.MoveTowards(
-            transform.position,
+        float t = Mathf.Clamp01(
+            interpolationTimer / interpolationDuration);
+
+        transform.position = Vector3.Lerp(
+            previousPosition,
             targetPosition,
-            speed * Time.deltaTime);
+            t);
 
         transform.rotation = Quaternion.RotateTowards(
             transform.rotation,
