@@ -50,6 +50,7 @@ A real-time 3D robot monitoring simulation built in **Unity 6 (6000.3.24f1)**. T
 | **W, A, S, D** / **Arrow Keys** | Free Camera Mode | **Move Camera**: Pan camera forward, backward, left, and right across the warehouse floor. |
 | **Right Mouse Click (Hold & Drag)** | Free Camera Mode | **Look Around**: Rotate camera pitch (-10° to 80°) and yaw. |
 | **F** | Global | **Toggle Camera Mode**: Switches between **Free Camera** and **Follow Camera** (smooth third-person chase camera locked on the selected robot). |
+| **ESC** | Global | **Close**: Closes the Application |
 
 ---
 
