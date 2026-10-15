@@ -1,4 +1,4 @@
-# Warehouse Robot Monitoring System
+# Robot Monitoring System
 
 A real-time 3D warehouse robot monitoring simulation built in **Unity 6 (6000.3.24f1)**. The system simulates autonomous warehouse robots receiving periodic telemetry data, smoothly interpolates their movement and rotation, provides an interactive UI dashboard for unit diagnostics, detects safety violations (proximity alerts and restricted zone breaches), and supports both free-flying and target-following camera systems.
 
