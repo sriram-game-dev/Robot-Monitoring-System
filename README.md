@@ -166,4 +166,17 @@ To run tests:
 - **Scalability Recommendations for Large Fleets (500+ Units)**:
   - Replace pairwise proximity checks with a spatial hash grid or Unity's Job System + Burst compiler (`IJobParallelFor`).
   - Batch UI nameplate billboarding or disable off-screen nameplate Canvas instances using `CullingGroup`.
+  
+### OPTIONAL BONUS WORK
+### 1. Object Pooling
+- Implemented `RobotPoolManager` to reuse robot GameObjects instead of repeatedly instantiating and destroying them.
+- Pre-allocates robot instances to reduce runtime allocation overhead and minimize potential frame-time spikes.
+- Returns inactive robots to the pool for reuse and supports dynamic pool expansion when the existing capacity is insufficient.
+- Verified robot reuse through a PlayMode test that confirms a returned robot instance is reused when requested again.
+
+### 2. Automated Testing
+- Implemented automated EditMode tests for `TelemetryValidator` to verify valid telemetry and reject invalid identifiers, negative speed values, and non-finite position or heading values.
+- Implemented PlayMode tests for `RobotPoolManager` to verify robot reuse and pooling behavior.
+- Used Unity Test Framework to execute tests in the Unity Editor.
+- Automated tests help identify regressions and improve confidence in telemetry validation and robot lifecycle management.
 
