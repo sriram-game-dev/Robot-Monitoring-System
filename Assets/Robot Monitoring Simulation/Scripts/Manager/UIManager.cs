@@ -14,13 +14,20 @@ public class UIManager : MonoBehaviour
     [SerializeField] private TMP_Text positionText;
     [SerializeField] private TMP_Text speedText;
     [SerializeField] private TMP_Text headingText;
-[SerializeField] private TMP_Text dataAgeText;
+    [SerializeField] private TMP_Text dataAgeText;
     [SerializeField] private TMP_Text statusText;
 
 
-    [Header("Warning UI")]
+    [Header("Warning Panel")]
     [SerializeField] private GameObject warningPanel;
     [SerializeField] private TMP_Text warningText;
+
+    [Header("Camera Panel")]
+    [SerializeField] private GameObject CameraPanel;
+    [SerializeField] private TMP_Text CameraModeText;
+
+
+
 
     private readonly Dictionary<string, string> activeWarnings =
     new Dictionary<string, string>();
@@ -97,87 +104,100 @@ public class UIManager : MonoBehaviour
 
 
 
-private void RefreshDetails()
-{
-    if (selectedRobot == null ||
-        selectedRobot.CurrentTelemetry == null)
-        return;
-
-    RobotTelemetry data = selectedRobot.CurrentTelemetry;
-
-    // Robot ID
-    RobotIdentity identity =
-        selectedRobot.GetComponent<RobotIdentity>();
-
-    string robotId = identity != null &&
-                     !string.IsNullOrEmpty(identity.UnitId)
-        ? identity.UnitId
-        : data.robotId;
-
-    if (robotIdText != null)
-        robotIdText.text = "ID: " + robotId;
-// Robot Name
-if (robotNameText != null)
-{
-    string robotName = GetRobotName(robotId);
-    robotNameText.text = "Name: " + robotName;
-}
-    // Speed
-    if (speedText != null)
-        speedText.text = $"Speed: {data.speed:F1} m/s";
-
-    // Heading
-    if (headingText != null)
-        headingText.text = $"Heading: {data.heading:F0} deg";
-
-    // Position
-    if (positionText != null)
-        positionText.text =
-            $"Position: X {data.position.x:F1} / " +
-            $"Z {data.position.z:F1}";
-
-    // Data Age
-    float dataAge = Mathf.Max(
-        0f, Time.time - data.lastUpdateTime);
-
-    if (dataAgeText != null)
-        dataAgeText.text = $"Data Age: {dataAge:F1} sec";
-
-    // Status
-    bool dataLost = !data.isConnected || dataAge >= 3f;
-
-    if (statusText != null)
+    private void RefreshDetails()
     {
-        statusText.text = dataLost
-            ? "Status: DATA LOST"
-            : "Status: NORMAL";
+        if (selectedRobot == null ||
+            selectedRobot.CurrentTelemetry == null)
+            return;
 
-        statusText.color = dataLost
-            ? Color.red
-            : Color.green;
+        RobotTelemetry data = selectedRobot.CurrentTelemetry;
+
+        // Robot ID
+        RobotIdentity identity =
+            selectedRobot.GetComponent<RobotIdentity>();
+
+        string robotId = identity != null &&
+                         !string.IsNullOrEmpty(identity.UnitId)
+            ? identity.UnitId
+            : data.robotId;
+
+        if (robotIdText != null)
+            robotIdText.text = "ID: " + robotId;
+        // Robot Name
+        if (robotNameText != null)
+        {
+            string robotName = GetRobotName(robotId);
+            robotNameText.text = "Name: " + robotName;
+        }
+        // Speed
+        if (speedText != null)
+            speedText.text = $"Speed: {data.speed:F1} m/s";
+
+        // Heading
+        if (headingText != null)
+            headingText.text = $"Heading: {data.heading:F0} deg";
+
+        // Position
+        if (positionText != null)
+            positionText.text =
+                $"Position: X {data.position.x:F1} / " +
+                $"Z {data.position.z:F1}";
+
+        // Data Age
+        float dataAge = Mathf.Max(
+            0f, Time.time - data.lastUpdateTime);
+
+        if (dataAgeText != null)
+            dataAgeText.text = $"Data Age: {dataAge:F1} sec";
+
+        // Status
+        bool dataLost = !data.isConnected || dataAge >= 3f;
+
+        if (statusText != null)
+        {
+            statusText.text = dataLost
+                ? "Status: DATA LOST"
+                : "Status: NORMAL";
+
+            statusText.color = dataLost
+                ? new Color32(185, 28, 28, 255)   // Red: Data lost
+                : new Color32(21, 128, 61, 255);  // Green: Normal
+        }
     }
-}
-private string GetRobotName(string robotId)
-{
-    if (string.IsNullOrEmpty(robotId) ||
-        !robotId.StartsWith("BOT_"))
-        return robotId;
-
-    if (!int.TryParse(robotId.Substring(4), out int number) ||
-        number < 1)
-        return robotId;
-
-    string name = "";
-
-    while (number > 0)
+    private string GetRobotName(string robotId)
     {
-        number--;
-        name = (char)('A' + number % 26) + name;
-        number /= 26;
-    }
+        if (string.IsNullOrEmpty(robotId) ||
+            !robotId.StartsWith("BOT_"))
+            return robotId;
 
-    return "ROBOT_" + name;
-}
+        if (!int.TryParse(robotId.Substring(4), out int number) ||
+            number < 1)
+            return robotId;
+
+        string name = "";
+
+        while (number > 0)
+        {
+            number--;
+            name = (char)('A' + number % 26) + name;
+            number /= 26;
+        }
+
+        return "ROBOT_" + name;
+    }
+    public void UpdateRobotPopup(RobotIdentity identity)
+    {
+        if (identity == null)
+            return;
+
+        RobotNamePopup popup =
+            identity.GetComponentInChildren<RobotNamePopup>(true);
+
+        if (popup != null)
+        {
+            popup.SetRobotName(GetRobotName(identity.UnitId));
+        }
+    }
 
     //--------------------------------------------------//
     //-------------------------------------------------//
@@ -197,6 +217,7 @@ private string GetRobotName(string robotId)
         RefreshWarningUI();
     }
 
+
     private void RefreshWarningUI()
     {
         bool hasWarnings = activeWarnings.Count > 0;
@@ -204,23 +225,70 @@ private string GetRobotName(string robotId)
         if (warningPanel != null)
             warningPanel.SetActive(hasWarnings);
 
-        if (warningText != null)
+        if (warningText == null)
+            return;
+
+        if (!hasWarnings)
         {
-            int maxVisibleWarnings = 5;
-
-            List<string> messages = new List<string>(
-                activeWarnings.Values);
-
-            int visibleCount = Mathf.Min(
-                messages.Count, maxVisibleWarnings);
-
-            messages = messages.GetRange(0, visibleCount);
-
-            warningText.text = hasWarnings
-                ? " ACTIVE WARNINGS \n\n"
-                    + string.Join("\n\n", messages)
-                : "";
+            warningText.text = "";
+            return;
         }
+
+        int maxVisibleWarnings = 5;
+        List<string> formattedMessages = new List<string>();
+
+        int count = 0;
+
+        foreach (var warning in activeWarnings)
+        {
+            if (count >= maxVisibleWarnings)
+                break;
+
+            Color color = GetWarningColor(warning.Key);
+            string hexColor = ColorUtility.ToHtmlStringRGB(color);
+
+            formattedMessages.Add(
+                $"<color=#{hexColor}>{warning.Value}</color>");
+
+            count++;
+        }
+
+        warningText.text =
+            "<color=#1D4ED8><b>ACTIVE WARNINGS</b></color>\n\n" +
+            string.Join("\n\n", formattedMessages);
+    }
+
+    //--------------------------------------------------//
+    //-----------------Robot Warning UI Visual-----------------//
+    //-------------------------------------------------//
+
+    private Color GetWarningColor(string warningKey)
+    {
+        if (string.IsNullOrEmpty(warningKey))
+            return new Color32(202, 138, 4, 255);
+
+        if (warningKey.IndexOf(
+            "proximity", System.StringComparison.OrdinalIgnoreCase) >= 0)
+            return new Color32(234, 88, 12, 255); // Orange
+
+        if (warningKey.IndexOf(
+            "restricted", System.StringComparison.OrdinalIgnoreCase) >= 0)
+            return new Color32(220, 38, 38, 255); // Red
+
+        if (warningKey.IndexOf(
+            "data", System.StringComparison.OrdinalIgnoreCase) >= 0)
+            return new Color32(185, 28, 28, 255); // Dark red
+
+        return new Color32(202, 138, 4, 255); // Amber
+    }
+    //--------------------------------------------------//
+    //-----------------Camera UI Visual-----------------//
+    //-------------------------------------------------//
+
+    public void SetCameraModeText(string mode)
+    {
+        if (CameraModeText != null)
+            CameraModeText.text = mode;
     }
 
 }

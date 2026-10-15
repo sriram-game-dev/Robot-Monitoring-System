@@ -54,6 +54,7 @@ public class GameManager : MonoBehaviour
             return;
         }
 
+
         telemetrySource.TelemetryUpdated += OnTelemetryUpdated;
 
         foreach (RobotTelemetry data in telemetrySource.Robots)
@@ -98,6 +99,11 @@ public class GameManager : MonoBehaviour
                 identity = robot.AddComponent<RobotIdentity>();
 
             identity.Initialize(data.robotId);
+
+            if (UIManager.instance != null)
+            {
+                UIManager.instance.UpdateRobotPopup(identity);
+            }
 
             controller = robot.GetComponent<RobotController>();
 

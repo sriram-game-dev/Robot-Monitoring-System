@@ -102,6 +102,7 @@ GameObject:
   - component: {fileID: 8934668137287114208}
   - component: {fileID: 8380572409324103235}
   - component: {fileID: 5282269267672999933}
+  - component: {fileID: 6566958150857456307}
   m_Layer: 0
   m_Name: ZoneTrigger
   m_TagString: Untagged
@@ -196,12 +197,25 @@ BoxCollider:
     serializedVersion: 2
     m_Bits: 0
   m_LayerOverridePriority: 0
-  m_IsTrigger: 0
+  m_IsTrigger: 1
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
   m_Size: {x: 1, y: 1, z: 1}
   m_Center: {x: 0, y: 0, z: 0}
+--- !u!114 &6566958150857456307
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 897007448398409119}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2eeff697d2db84642976ce311a9864a7, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::RestrictedZone_Trigg
+  zoneName: RestrictedZone_A
 --- !u!1 &2036943481005912510
 GameObject:
   m_ObjectHideFlags: 0
@@ -444,8 +458,8 @@ Transform:
   m_GameObject: {fileID: 5743475502620694077}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -0.0195, y: 0.025, z: -0.0333}
-  m_LocalScale: {x: 7, y: 0.02, z: 7}
+  m_LocalPosition: {x: -0.045, y: 0.025, z: -0.0527}
+  m_LocalScale: {x: 7.1675, y: 0.02, z: 7.0392}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 7852324795720076162}

@@ -22,14 +22,27 @@ public class CameraManager : MonoBehaviour
     private float yaw;
     private float pitch = 35f;
 
+    public static CameraManager Instance { get; private set; }
+    private void Awake()
+    {
+        Instance = this;
+    }
 
+    private void OnDestroy()
+    {
+        if (Instance == this)
+            Instance = null;
+    }
     void Reference()
     {
         selectionUI = UIManager.instance;
     }
     private void Start()
     {
+        //Reference
         Reference();
+        //Camera Settings
+        UpdateCameraModeText();
         Vector3 angles = transform.eulerAngles;
         yaw = angles.y;
     }
@@ -56,10 +69,23 @@ public class CameraManager : MonoBehaviour
             }
         }
 
+        // Continuously synchronize the UI text with the camera mode.
+        UpdateCameraModeText();
+
         if (currentMode == CameraMode.Free)
             HandleFreeCamera();
         else
             HandleFollowCamera();
+    }
+    private void UpdateCameraModeText()
+    {
+        if (selectionUI == null)
+            return;
+
+        if (currentMode == CameraMode.Free)
+            selectionUI.SetCameraModeText("Free");
+        else
+            selectionUI.SetCameraModeText("Follow");
     }
 
     private void HandleFreeCamera()
@@ -81,6 +107,21 @@ public class CameraManager : MonoBehaviour
 
             transform.rotation = Quaternion.Euler(pitch, yaw, 0f);
         }
+    }
+    public bool IsFollowingRobot(RobotIdentity identity)
+    {
+        if (identity == null ||
+            currentMode != CameraMode.Follow ||
+            selectionUI == null ||
+            selectionUI.SelectedRobot == null)
+        {
+            return false;
+        }
+
+        RobotIdentity selectedIdentity =
+            selectionUI.SelectedRobot.GetComponent<RobotIdentity>();
+
+        return selectedIdentity == identity;
     }
 
     private void HandleFollowCamera()
