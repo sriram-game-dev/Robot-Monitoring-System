@@ -23,6 +23,13 @@ public class GameManager : MonoBehaviour
             Destroy(gameObject);
         }
     }
+    private void Update()
+    {
+        if (Input.GetKeyDown(KeyCode.Escape))
+        {
+            CloseApplication();
+        }
+    }
 
     private void Reference()
     {
@@ -122,5 +129,14 @@ public class GameManager : MonoBehaviour
             robotId, out RobotController controller);
 
         return controller;
+    }
+
+    public void CloseApplication()
+    {
+        Application.Quit();
+
+#if UNITY_EDITOR
+    UnityEditor.EditorApplication.isPlaying = false;
+#endif
     }
 }
